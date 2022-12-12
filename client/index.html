@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudoku</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="app">
-        <h1>Sudoku</h1>
-        <div id="sudoku-board"></div>
-    </div>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script src="app.js"></script>    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sudoku</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div id="app" v-cloak>
+            <h1 id="title">Sudoku</h1>
+            <div id="sudoku-board">
+                <div v-for="(row, rowIndex) in board" v-bind:key="rowIndex" class="row">                
+                    <div v-for="(column, columnIndex) in row" v-bind:key="columnIndex" v-bind:class="{'column-even': rowIndex % 2 === 0 && columnIndex % 2 === 0, 'column-odd': rowIndex % 2 === 0 && columnIndex % 2 !== 0, 'row-even': rowIndex % 2 !== 0 && columnIndex % 2 === 0, 'row-odd': rowIndex % 2 !== 0 && columnIndex % 2 !== 0}">
+                        <input type="number" min="1" max="9" v-model.number="board[rowIndex][columnIndex]" @input="checkInput($event, rowIndex, columnIndex)" :placeholder="board[rowIndex][columnIndex]">                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="app.js"></script>    
+    </body>
 </html>
