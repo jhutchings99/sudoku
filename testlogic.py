@@ -80,13 +80,94 @@ def placeGrid(grid, num, x, y, row, column):
 
 # placeNumber(createGrid(), 1)
 
-def main():
-    grid = createGrid() # still getting 0s :(
+# def main():
+#     grid = createGrid() # still getting 0s :(
+#     for i in range(9):
+#         placeNumber(grid,(i+1))
+#     print()
+#     print(grid)
+
+#goto here 
+def placeRow(grid, grid2, row):
+    R = [1,2,3,4,5,6,7,8,9]
+    random.shuffle(R)
+    c = -1
+    while True:
+        c+=1
+        if c > 8:
+            c =0
+        canbreak = False
+        if R[c] not in grid2[c]: # this is whatu I have been messing with row and c
+            print(R[c],"(",c,")","not in",grid2[c],"(",c,")")
+            canbreak = True
+            if c % 3 == 1: #check box row 2
+                if checkRow(c,grid,row,1,R) == False:
+                    if c+1 > 8:
+                        random.shuffle(R)
+                    else:
+                        R[c], R[c+1] = R[c+1], R[c] #maybe do a better more complex swap later
+                    continue
+            elif c % 3 == 2:
+                if checkRow(c,grid,row,1,R) == False:
+                    if c+1 > 8:
+                        random.shuffle(R)
+                    else:
+                        R[c], R[c+1] = R[c+1], R[c] #maybe do a better more complex swap later
+                    continue
+                if checkRow(c,grid,row,2,R) == False:
+                    if c+1 > 8:
+                        random.shuffle(R)
+                    else:
+                        R[c], R[c+1] = R[c+1], R[c] #maybe do a better more complex swap later
+                    continue
+            grid2[c].append(R[c])
+        # print(R, c)
+            print(len(grid2[c]),c+1)
+            if c>=8 and canbreak:
+                break
     for i in range(9):
-        placeNumber(grid,(i+1))
+        grid[row][i] = R[i]
+    return
+
+
+def checkRow( c, grid , row , above, R ):
+    if c % 3 == 0: #check box column 1
+        if grid[row-above][c+1] != R[c]: #comparing row 1 with it
+            if grid[row-above][c+2] != R[c]: #comparing row 1 with it middle and right
+                #this row is good
+                #+ ? ?
+                #X + +
+                #- - -
+                # where + is good by default
+                # where ? is check this
+                # where X is what to check with
+                # where - is not rendered yet
+                return True
+    if c % 3 == 1: #check box column 2
+        if grid[row-above][c-1] != R[c]: #compare left corner with it
+            if grid[row-above][c+1] != R[c]:
+                #? + ?
+                #+ X +
+                #- - -
+                return True
+    else: #check box colun 3
+        if grid[row-above][c-1] != R[c]: #compare upper middle with it
+            if grid[row-above][c-2] != R[c]:
+                #? ? +
+                #+ + X
+                #- - -
+                return True
+    return False
+
+def main():
+    grid = createGrid()
+    grid2 = [[],[],[],[],[],[],[],[],[]]
+    for i in range(2):
+        placeRow(grid, grid2, i)
     printGrid(grid)
+    print()# the checks dont work
+    print(grid2)
     print()
-    print(grid)
 
 main()
 
