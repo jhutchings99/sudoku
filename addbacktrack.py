@@ -23,22 +23,86 @@ def createGrid():
             grid[row].append(0)
     return grid
 
-def placeInRow(grid, y, columns, num):
+def calculateGridNumber(row, gridnumber):
+    if gridnumber == -1:
+        gridnumber = row-1
+    else:
+        gridnumber -= 1
+    return gridnumber
+
+def backtrack(grid, grids, gridnumber, columns, number, y):
+    if grids[gridnumber] == False:
+        print("starting over grids are empty")
+        return False #just start over 
+    grid = grids[gridnumber]
+    row = -1
+    column = -1
+    for c in range(len(grid[gridnumber])): # loop through each column in row
+        if grid[gridnumber][c] == number:
+            print("grid[r][c]=",grid[gridnumber][c],"number=",number, "gridnumber=",gridnumber)
+            row = gridnumber
+            column = c
+            break
+    if row == -1 or column == -1:
+        raise Exception("Couldnt find number in grid")
+    grid[row][column] = 'x'
+    replaceSpecialX(grid, number)
+    grid[row][column] = 'x'
+    backtrackNumber = y - gridnumber+1 
+    print("backtrackNumber =",backtrackNumber)
+    for i in range(backtrackNumber):
+        x = 'x'
+        for c in range(len(columns)):
+            if grid[row+i][columns[c]] == 0:
+                x = columns[c]
+                break
+        if x == 'x':
+            print("backTracking again.... ")
+            replaceSpecialX(grid, number)
+            gridnumber = calculateGridNumber(row+i, gridnumber)
+            b = backtrack(grid , grids, gridnumber, columns,number, row+i)
+            print("x=",x)
+            if b == False:
+                return b
+        y = row+i
+        grid[y][x] = number
+        if y+1 < 9:
+            checkNextRow(grid,y+1,x)
+        else:
+            print("backtracked successfully to end of list")
+            return True #backtracked successfully to end of list end
+        print("------BackTrackGrid------")
+        printGrid(grid)
+        print("---")
+        input()
+        grids.append(grid)
+    print("backtracked successfully to end of backtrack number")
+    return True #backtraced successfully to backtrack number
+
+
+
+
+def placeInRow(grid, y, columns, num, grids, gridnumber):
     x = 'x'
     for column in range(len(columns)):
         if grid[y][columns[column]] == 0:
             x = columns[column]
             break
     if x == 'x':
-        raise Exception("x should not == 'x'")
+        # raise Exception("x should not == 'x'")
+        print("backTracking .... ")
+        gridnumber = calculateGridNumber(y, gridnumber)
+        b = backtrack(grid , grids, gridnumber, columns,num, y)
+        return b
         #Back track here some how
-
+    
     grid[y][x] = num
+    grids.append(grid)
     if y+1 < 9:
         checkNextRow(grid, y+1,x)
     else:
         replaceX(grid)
-    return
+    return True
 
 def checkNextRow(grid, y, x):
     i=0
@@ -99,15 +163,33 @@ def replaceX(grid):
             if grid[row][column] == 'x':
                 grid[row][column] = 0
     return
+
+def replaceSpecialX(grid, num):
+    keepXs =[]
+    for row in range(9):
+        for column in range(9):
+            if grid[row][column] == num:
+                keepXs.append(column)
+            if column in keepXs:
+                continue;
+            if grid[row][column] == 'x':
+                grid[row][column] = 0
+    return
+
             
 
 def main():
     grid = createGrid()
     column = [0,1,2,3,4,5,6,7,8]
     for num in range(1,10):
+        grids = [False]
+        gridnumber = -1
         for row in range(9):
             random.shuffle(column)
-            placeInRow(grid, row, column, num)
+            x = placeInRow(grid, row, column, num, grids, gridnumber)
+            if x == False:
+                main()
+                return
             print("_____")
             printGrid(grid)
             print()
