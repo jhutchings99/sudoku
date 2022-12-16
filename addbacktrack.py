@@ -8,7 +8,7 @@ import random
 # 0 0 0 | x x x | 0 1 0 | #random placement if == 0
 # 0 0 0 | x x x | x x x | #place 'x' on next row where it cant be if ==0
                              #replace 'x''s at end 0's
-
+count = 0
 def printGrid(grid):
     for row in range(9):
         print()
@@ -39,7 +39,7 @@ def backtrack(grid, grids, gridnumber, columns, number, y):
     column = -1
     for c in range(len(grid[gridnumber])): # loop through each column in row
         if grid[gridnumber][c] == number:
-            print("grid[r][c]=",grid[gridnumber][c],"number=",number, "gridnumber=",gridnumber)
+            # print("grid[r][c]=",grid[gridnumber][c],"number=",number, "gridnumber=",gridnumber)
             row = gridnumber
             column = c
             break
@@ -49,7 +49,7 @@ def backtrack(grid, grids, gridnumber, columns, number, y):
     replaceSpecialX(grid, number)
     grid[row][column] = 'x'
     backtrackNumber = y - gridnumber+1 
-    print("backtrackNumber =",backtrackNumber)
+    # print("backtrackNumber =",backtrackNumber)
     for i in range(backtrackNumber):
         x = 'x'
         for c in range(len(columns)):
@@ -57,26 +57,42 @@ def backtrack(grid, grids, gridnumber, columns, number, y):
                 x = columns[c]
                 break
         if x == 'x':
-            print("backTracking again.... ")
-            replaceSpecialX(grid, number)
-            gridnumber = calculateGridNumber(row+i, gridnumber)
-            b = backtrack(grid , grids, gridnumber, columns,number, row+i)
-            print("x=",x)
-            if b == False:
-                return b
+            # print("backTracking again.... ")
+            # replaceSpecialX(grid, number)
+            # gridnumber = calculateGridNumber(row-i, gridnumber)
+            # print("x=",x, "row=",row-i)
+            # b = backtrack(grid , grids, gridnumber, columns,number, row-i)
+            # for trys in range(1):
+            #     for c in range(len(columns)):
+            #         if grid[row-i][columns[c]] == 0:
+            #             x = column[c]
+            #             break
+            #     if x != 'x':
+            #         break
+            #     replaceSpecialX(grid,number)
+            #     gridnumber = calculateGridNumber(row-i, gridnumber)
+            #     print("again... x=",x,"row=",row-i)
+            #     b = backtrack(grid, grids, gridnumber, columns, number, row-i)
+            # if x == 'x':
+            # print("backtrack failed starting over...")
+            global count
+            count+=1
+            return False
+            # if b == False:
+            #     return b
         y = row+i
         grid[y][x] = number
         if y+1 < 9:
             checkNextRow(grid,y+1,x)
         else:
-            print("backtracked successfully to end of list")
+            # print("backtracked successfully to end of list")
             return True #backtracked successfully to end of list end
-        print("------BackTrackGrid------")
-        printGrid(grid)
-        print("---")
-        input()
+        # print("------BackTrackGrid------")
+        # printGrid(grid)
+        # print("---")
+        # input()
         grids.append(grid)
-    print("backtracked successfully to end of backtrack number")
+    # print("backtracked successfully to end of backtrack number")
     return True #backtraced successfully to backtrack number
 
 
@@ -90,7 +106,7 @@ def placeInRow(grid, y, columns, num, grids, gridnumber):
             break
     if x == 'x':
         # raise Exception("x should not == 'x'")
-        print("backTracking .... ")
+        # print("backTracking .... ")
         gridnumber = calculateGridNumber(y, gridnumber)
         b = backtrack(grid , grids, gridnumber, columns,num, y)
         return b
@@ -190,13 +206,20 @@ def main():
             if x == False:
                 main()
                 return
-            print("_____")
-            printGrid(grid)
-            print()
-            input("")
+            # print("_____")
+            # printGrid(grid)
+            # print()
+            # input("")
     printGrid(grid)
     print()
+    global count
+    print("restarted =",count,"times")
+    print()
     return
+
+#when ran 10 times, got restarts ranging from 9 - 118 with an adverage of 53.6 times
+# if it works it works lol
+
 
 if __name__ == '__main__':
     main()
